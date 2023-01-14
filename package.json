@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "dev": "npx ts-node src/index.ts assets/index.html",
+    "build": "tsc",
+    "fmt": "npx prettier --plugin-search-dir . build/*.svelte -w",
+    "process": "npm run dev && npm run fmt"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "fs": "^0.0.1-security",
+    "node-html-parser": "^6.1.4",
+    "prettier-plugin-svelte": "^2.9.0",
+    "process": "^0.11.10",
+    "svelte": "^3.55.1",
+    "typescript": "^4.9.4"
+  }
+}
