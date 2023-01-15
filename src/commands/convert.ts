@@ -31,15 +31,19 @@ class ConvertCommand extends Command {
 
     const onFinalFileComplete = (fileName: string, fileString: string) => {
       // write the file
-      fs.writeFile(`build/${fileName}.svelte`, fileString, function (err: any) {
-        if (err) throw err;
-      });
+      fs.writeFile(
+        `${flags.outDir}/${fileName}.svelte`,
+        fileString,
+        function (err: any) {
+          if (err) throw err;
+        }
+      );
     };
 
     // keep running until there are no more blocks
     while (true) {
       let { stringCopy, blocks } = run({
-        prefix: "compx_",
+        prefix: flags.prefix,
         htmlString: htmlString as string,
         onFinalFileComplete,
       });
@@ -63,9 +67,13 @@ class ConvertCommand extends Command {
     const fullFile = `<script>\n${importString}\n</script>\n${htmlString}\n\n<style>\n${""}\n</style>\n`;
 
     // write the top level file
-    fs.writeFile(`build/App.svelte`, fullFile as string, function (err: any) {
-      if (err) throw err;
-    });
+    fs.writeFile(
+      `${flags.outDir}/App.svelte`,
+      fullFile as string,
+      function (err: any) {
+        if (err) throw err;
+      }
+    );
 
     cli.action.stop("done!");
 
@@ -92,6 +100,11 @@ ConvertCommand.flags = {
     char: "o",
     description: "folder to output the converted files to",
     default: "build",
+  }),
+  prefix: flags.string({
+    char: "p",
+    description: "prefix to used to determine which elements to convert",
+    default: "comp_",
   }),
 };
 

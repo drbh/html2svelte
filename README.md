@@ -14,13 +14,45 @@ Add `comp_` to the class names of your HTML elements and run `html2svelte` on yo
 
 <img src="images/html2svelte.png">
 
-## 🕹️ How to use
-
 ### 📦 Install from npm
 
 ```bash
-# in progress (not published yet)
 npm install -g html2svelte
+```
+
+### 📖 Docs
+
+```
+$ html2svelte help
+cli for html2svelte
+
+VERSION
+  html2svelte/0.0.1b darwin-x64 node-v16.17.0
+
+USAGE
+  $ html2svelte [COMMAND]
+
+COMMANDS
+  convert  Convert a HTML file to Svelte Components
+  help     Display help for html2svelte
+```
+
+```
+$ html2svelte convert --help
+Convert a HTML file to Svelte Components
+
+USAGE
+  $ html2svelte convert [FILE]
+
+ARGUMENTS
+  FILE  html file to convert
+
+OPTIONS
+  -o, --outDir=outDir  [default: build] folder to output the converted
+                       files to
+
+  -p, --prefix=prefix  [default: comp_] prefix to used to determine which
+                       elements to convert
 ```
 
 ### 🛠️ Build from source
@@ -34,10 +66,6 @@ html2svelte convert assets/index.html
 prettier --plugin-search-dir . build/*.svelte -w
 ```
 
-1. clone this repo and install dependencies
-2. copy an HTML file into the `assets/` folder (or use the one above)
-3. run `npm run process`
-
 ## ⚙️ How it works
 
 1. The script will look for all the HTML file based on the cli argument passed.
@@ -47,9 +75,7 @@ prettier --plugin-search-dir . build/*.svelte -w
 
 ## 🧠 Thoughts
 
-- [ ] Currently relies on a fixed prefix for the class names. This could be changed to a cli argument, or with a config file.
-- [ ] Currently this requires an operating system for things like `fs` and `prettier`. This should be to be compatible with the browser.
-- [ ] Once browser compatibility this should be a simple web app that you can drag and drop your HTML files into.
-- [ ] This could probably be extended to work with other frameworks like React, Vue, etc. if you wanna build out a more generic component generator.
-- [ ] Maybe you should be able to reverse the process and turn Svelte components into HTML. This would be useful for sharing components with other people, and reimporting to design software.
-- [ ] should publish on npm so its easier to use
+- [ ] should have built-in prettier support
+- [ ] could/should be a vs code extension
+- [ ] should support more functionality
+- [ ] should handle non single div cases better
