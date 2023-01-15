@@ -1,9 +1,21 @@
 {
+  "name": "html2svelte",
+  "description": "cli for html2svelte",
+  "version": "0.0.1",
+  "author": "drbh",
+  "bin": {
+    "html2svelte": "./bin/run"
+  },
   "scripts": {
     "dev": "npx ts-node src/index.ts assets/index.html",
-    "build": "tsc",
+    "build": "npx tsc --build tsconfig.json",
     "fmt": "npx prettier --plugin-search-dir . build/*.svelte -w",
-    "process": "npm run dev && npm run fmt"
+    "process": "npm run dev && npm run fmt",
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "eslint .",
+    "prepack": "npx oclif manifest && npx oclif readme",
+    "version": "npx oclif readme && git add README.md",
+    "bootstrap": "npm install && npm run build && npm run prepack && npm install -g ."
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
@@ -13,5 +25,27 @@
     "process": "^0.11.10",
     "svelte": "^3.55.1",
     "typescript": "^4.9.4"
+  },
+  "files": [
+    "/oclif.manifest.json",
+    "/src",
+    "/bin",
+    "/dist"
+  ],
+  "main": "dist/index.js",
+  "oclif": {
+    "commands": "./dist/commands",
+    "bin": "html2svelte",
+    "dirname": "html2svelte",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "drbh/html2svelte",
+  "dependencies": {
+    "@oclif/command": "^1.8.21",
+    "@oclif/config": "^1.18.6",
+    "@oclif/plugin-help": "^5.1.23",
+    "cli-ux": "^6.0.9"
   }
 }
