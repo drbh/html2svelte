@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HTML2Svelte: Convert HTML to Svelte instantly</title>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css"
+    />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="./common.css" />
+    <script src="bundle/index.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="intro">
+        <div class="title">
+          <h1>HTML2Svelte</h1>
+          <h2>Convert HTML to Svelte Components</h2>
+        </div>
+        <div>
+          <p>
+            This tool instantly converts HTML into a Svelte Components. Paste a
+            HTML file on the left and the equivalent Svelte Components will be
+            generated to the right, which you can paste into your program. The
+            script has to make some assumptions, so double-check the output!
+          </p>
+          <p>
+            Make sure that you add <strong>comp_</strong> to the start of all of
+            the classes you want to convert to Svelte Components.
+          </p>
+          <p>
+            &copy; 2023 <a href="https://github.com/drbh">drbh</a> &bull;
+            <a href="https://github.com/drbh/html2svelte">View on GitHub</a>
+          </p>
+        </div>
+        <div>
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Svelte_logo_by_gengns.svg/1028px-Svelte_logo_by_gengns.svg.png"
+            id="brand"
+          />
+        </div>
+      </div>
+    </header>
+    <table>
+      <tr>
+        <th style="width: 45%">HTML</th>
+        <th style="width: 10%; font-size: 22px">&#8594;</th>
+        <th style="width: 45%">Svelte</th>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <td style="width: 50%">
+          <div id="input" contenteditable></div>
+        </td>
+        <td style="width: 50%">
+          <div id="output"></div>
+        </td>
+      </tr>
+    </table>
+
+    <footer>&copy; 2023 drbh</footer>
+  </body>
+</html>
+
+<script>
+  // listen to change events on the element id="input"
+  document.getElementById("input").addEventListener("input", (e) => {
+    // get the value of the element
+    let htmlString = e.target.innerText;
+    let finalOutput = [];
+    // run the function
+    const onFinalFileComplete = (name, file) => {
+      const date = new Date().toISOString().slice(0, 10);
+      finalOutput.push({ name, file, date });
+    };
+    // keep running until there are no more blocks
+    while (true) {
+      let { stringCopy, blocks } = html2svelte.run({
+        prefix: "comp_",
+        htmlString,
+        onFinalFileComplete,
+      });
+      let remainingBlocks = blocks.length;
+      htmlString = stringCopy;
+      if (remainingBlocks <= 0) break;
+    }
+    const date = new Date().toISOString().slice(0, 10);
+
+    finalOutput.push({ name: "App", file: `<script><\/script>\n${htmlString}\n<style><\/style>`, date });
+
+    // TODO: missing imports and script and style tags
+    let outputString = "";
+    for (let i = 0; i < finalOutput.length; i++) {
+      const { name, file, date } = finalOutput[i];
+      outputString += `<!--\n-----------------------------------------\n`;
+      outputString += `// filename: ${name}.svelte\n`;
+      outputString += `// created: ${date}\n`;
+      outputString += "-->\n";
+      outputString += file;
+      outputString += "\n";
+    }
+
+    // set the value of the element id="output"
+    document.getElementById("output").innerText = outputString;
+  });
+
+  document.getElementById("input").innerText = `
+<div class="comp_main">
+  <div class="top">
+    <div class="text">💪 yeeeeee</div>
+  </div>
+  <div class="bottom">
+    <div class="card">
+      <div class="card-body">
+        <p>🐳 a whale</p>
+      </div>
+    </div>
+  </div>
+  <div class="bottom2">
+    <div class="card2">
+      <div>
+        <h1>Some Card</h1>
+        <input type="text" placeholder="🐳 a whale" />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+  var event = new Event("input", {
+    bubbles: true,
+    cancelable: true,
+  });
+
+  document.getElementById("input").dispatchEvent(event);
+</script>

@@ -1,18 +1,4 @@
-import fs from "fs";
 import parser from "node-html-parser";
-import process from "process";
-
-const PREFIX = "comp_";
-
-// read file
-export const readFile = (file: any) => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(file, "utf8", (err: any, data: any) => {
-      if (err) reject(err);
-      else resolve(data);
-    });
-  });
-};
 
 // check if this is something we'll want to make a component out of
 function hasClassAttribute(node: any) {
@@ -20,16 +6,16 @@ function hasClassAttribute(node: any) {
 }
 
 // split the html tree into blocks
-export function splitHTMLTree(root: any) {
+export function splitHTMLTree(prefix: string, root: any) {
   let results: any[] = [];
   let lastLevel = 0;
 
   // recursively process the tree
-  function processNode(node: any, level = 0) {
+  function processNode(prefix: string, node: any, level = 0) {
     level++;
     let block = [{ level, node }];
     for (let child of node.childNodes) {
-      let childBlocks = processNode(child, level);
+      let childBlocks = processNode(prefix, child, level);
       block = block.concat(childBlocks);
     }
 
@@ -46,8 +32,8 @@ export function splitHTMLTree(root: any) {
       let firstClassValue = newClassList[0];
 
       // prefix check and removal
-      if (!firstClassValue.startsWith(PREFIX)) return results;
-      firstClassValue = firstClassValue.slice(PREFIX.length);
+      if (!firstClassValue.startsWith(prefix)) return results;
+      firstClassValue = firstClassValue.slice(prefix.length);
 
       // add it back into the class list
       newClassList[0] = firstClassValue;
@@ -82,12 +68,20 @@ export function splitHTMLTree(root: any) {
     return results;
   }
 
-  const blocks = processNode(root);
+  const blocks = processNode(prefix, root);
 
   return blocks;
 }
 
-export const run = (htmlString: string) => {
+export const run = ({
+  prefix,
+  htmlString,
+  onFinalFileComplete,
+}: {
+  prefix: string;
+  htmlString: string;
+  onFinalFileComplete: any;
+}) => {
   let stringCopy = htmlString;
   // parse our html string into a DOM tree - include everything
   const htmlTree = parser.parse(htmlString, {
@@ -119,7 +113,7 @@ export const run = (htmlString: string) => {
     },
   });
 
-  let blocks = splitHTMLTree(htmlTree);
+  let blocks = splitHTMLTree(prefix, htmlTree);
 
   // pop off the first block and update all other blocks accordingly based on if this
   // block is inside another block or not
@@ -158,14 +152,7 @@ export const run = (htmlString: string) => {
   // build full file
   const fullFile = `<script>\n${importString}\n</script>\n${firstBlockString}\n<style>\n${""}\n</style>\n`;
 
-  // write the file
-  fs.writeFile(
-    `build/${firstBlock.componentName}.svelte`,
-    fullFile,
-    function (err: any) {
-      if (err) throw err;
-    }
-  );
+  onFinalFileComplete(firstBlock.componentName, fullFile);
 
   // finally replace the html with the component tag
   stringCopy =

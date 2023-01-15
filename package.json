@@ -46,6 +46,7 @@
     "@oclif/command": "^1.8.21",
     "@oclif/config": "^1.18.6",
     "@oclif/plugin-help": "^5.1.23",
-    "cli-ux": "^6.0.9"
+    "cli-ux": "^6.0.9",
+    "esbuild": "^0.17.0"
   }
 }

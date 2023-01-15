@@ -1,7 +1,17 @@
 const { flags, Command } = require("@oclif/command");
 const { cli } = require("cli-ux");
-import { readFile, run } from "../html2svelte/index";
+import { run } from "../html2svelte/index";
 import fs from "fs";
+
+// read file
+export const readFile = (file: any) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(file, "utf8", (err: any, data: any) => {
+      if (err) reject(err);
+      else resolve(data);
+    });
+  });
+};
 
 class ConvertCommand extends Command {
   async run() {
@@ -19,9 +29,20 @@ class ConvertCommand extends Command {
     // read to string
     let htmlString = await readFile(fileName);
 
+    const onFinalFileComplete = (fileName: string, fileString: string) => {
+      // write the file
+      fs.writeFile(`build/${fileName}.svelte`, fileString, function (err: any) {
+        if (err) throw err;
+      });
+    };
+
     // keep running until there are no more blocks
     while (true) {
-      let { stringCopy, blocks } = run(htmlString as string);
+      let { stringCopy, blocks } = run({
+        prefix: "compx_",
+        htmlString: htmlString as string,
+        onFinalFileComplete,
+      });
       let remainingBlocks = blocks.length;
       htmlString = stringCopy;
       if (remainingBlocks <= 0) break;
