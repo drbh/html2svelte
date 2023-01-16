@@ -10,6 +10,20 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
     <link rel="stylesheet" href="./common.css" />
     <script src="bundle/index.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-5S860550V3"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-5S860550V3");
+    </script>
   </head>
   <body>
     <header>
@@ -88,7 +102,11 @@
     }
     const date = new Date().toISOString().slice(0, 10);
 
-    finalOutput.push({ name: "App", file: `<script><\/script>\n${htmlString}\n<style><\/style>`, date });
+    finalOutput.push({
+      name: "App",
+      file: `<script><\/script>\n${htmlString}\n<style><\/style>`,
+      date,
+    });
 
     // TODO: missing imports and script and style tags
     let outputString = "";
