@@ -1,7 +1,7 @@
 {
   "name": "html2svelte",
   "description": "cli for html2svelte",
-  "version": "0.0.1b",
+  "version": "0.0.1c",
   "author": "drbh",
   "bin": {
     "html2svelte": "./bin/run"
