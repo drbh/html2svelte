@@ -8,6 +8,11 @@ I especially like that its much easier to design/style an app, and then add logi
 
 There are a list of other "reasons why" you should use Svelte, but thats left as an exercise to the reader.
 
+## 💃 Try it out
+
+[Convert HTML to Svelte Instantly ⚡️](https://drbh.github.io/html2svelte/)
+
+
 ## 💥 TLDR;
 
 Add `comp_` to the class names of your HTML elements and run `html2svelte` on your HTML files.
